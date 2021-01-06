@@ -1,0 +1,11 @@
+{
+  "extends": "tsconfigs/nodejs-executable",
+  "compilerOptions": {
+    // see https://github.com/microsoft/TypeScript/wiki/Node-Target-Mapping
+    "target": "ES2019",
+    "lib": [
+      // see https://github.com/microsoft/TypeScript/wiki/Node-Target-Mapping
+      "ES2019"
+    ]
+  }
+}
