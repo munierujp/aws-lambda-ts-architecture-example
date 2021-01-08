@@ -3,8 +3,7 @@ import { StatusCodes } from 'http-status-codes'
 import { Controller } from '../../src/controllers/users_userId'
 import { handler } from '../../src/handlers/users_userId'
 import * as createErrorResponseModule from '../../src/modules/createErrorResponse'
-import type { Result as ControllerResult } from '../../src/controllers/users_userId'
-import type { Result as HandlerResult } from '../../src/handlers/users_userId'
+import type { Result } from '../../src/controllers/users_userId'
 
 /* eslint-disable-next-line @typescript-eslint/no-var-requires */
 const LambdaTester = require('lambda-tester')
@@ -26,18 +25,17 @@ describe('handler()', () => {
   })
 
   it('returns success response if error did not occur when executing controller', async () => {
-    const controllerResult: ControllerResult = {
-      id: 'test id',
-      name: 'test name'
+    const controllerResult: Result = {
+      statusCode: StatusCodes.OK,
+      body: 'test body'
     }
     executeSpy.mockResolvedValue(controllerResult)
 
     await LambdaTester(handler)
       .context(context)
       .event(event)
-      .expectResult((result: HandlerResult) => {
-        expect(result.statusCode).toBe(StatusCodes.OK)
-        expect(JSON.parse(result.body)).toEqual(controllerResult)
+      .expectResult((result: Result) => {
+        expect(result).toBe(controllerResult)
         expect(executeSpy).toBeCalledTimes(1)
         expect(createErrorResponseSpy).not.toBeCalled()
       })
@@ -46,7 +44,7 @@ describe('handler()', () => {
   it('returns error response if error occurred when executing controller', async () => {
     const error = new Error('test error')
     executeSpy.mockRejectedValue(error)
-    const resp: HandlerResult = {
+    const resp: Result = {
       statusCode: StatusCodes.INTERNAL_SERVER_ERROR,
       body: 'test body'
     }
@@ -55,8 +53,8 @@ describe('handler()', () => {
     await LambdaTester(handler)
       .context(context)
       .event(event)
-      .expectResult((result: HandlerResult) => {
-        expect(result).toEqual(resp)
+      .expectResult((result: Result) => {
+        expect(result).toBe(resp)
         expect(executeSpy).toBeCalledTimes(1)
         expect(createErrorResponseSpy).toBeCalledTimes(1)
         expect(createErrorResponseSpy).toBeCalledWith(error)
@@ -65,7 +63,7 @@ describe('handler()', () => {
 
   describe('if validation error occurred', () => {
     const expectBadRequest = async (event: Record<string, any>): Promise<void> => {
-      const resp: HandlerResult = {
+      const resp: Result = {
         statusCode: StatusCodes.BAD_REQUEST,
         body: 'test body'
       }
@@ -74,8 +72,8 @@ describe('handler()', () => {
       await LambdaTester(handler)
         .context(context)
         .event(event)
-        .expectResult((result: HandlerResult) => {
-          expect(result).toEqual(resp)
+        .expectResult((result: Result) => {
+          expect(result).toBe(resp)
           expect(executeSpy).not.toBeCalled()
           expect(createErrorResponseSpy).toBeCalledTimes(1)
         })
