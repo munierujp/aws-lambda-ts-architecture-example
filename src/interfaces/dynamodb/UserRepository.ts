@@ -20,9 +20,14 @@ export class UserRepository implements repositories.UserRepository {
   }
 
   async findById (id: string): Promise<User> {
+    const user = await this.get({ id })
+    return user as User
+  }
+
+  private async get (key: DynamoDB.DocumentClient.Key): Promise<DynamoDB.DocumentClient.AttributeMap> {
     const result = await this.db.get({
       TableName: this.tableName,
-      Key: { id }
+      Key: key
     }).promise()
     const item = result.Item
 
@@ -30,6 +35,6 @@ export class UserRepository implements repositories.UserRepository {
       throw new UserNotFoundError('user not found')
     }
 
-    return item as User
+    return item
   }
 }
