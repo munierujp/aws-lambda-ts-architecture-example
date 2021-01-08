@@ -5,9 +5,7 @@ import {
   errorHandler,
   validator
 } from '../middlewares'
-import {
-  importAws
-} from '../modules'
+import { importAws } from '../modules'
 import type {
   APIGatewayProxyResult,
   Handler
