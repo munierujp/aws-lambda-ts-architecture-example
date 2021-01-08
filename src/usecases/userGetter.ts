@@ -1,10 +1,9 @@
 import type { User } from '../domain/models'
 import type { UserRepository } from '../domain/repositories'
-import type { Executable } from '../types'
 
 export type Result = User
 
-export class Executor implements Executable<Result> {
+export class Executor {
   private readonly userId: string
   private readonly userRepo: UserRepository
 
