@@ -20,6 +20,14 @@ export function createErrorResponse (error: Error): APIGatewayProxyResult {
     }
   }
 
+  // see https://github.com/middyjs/middy/tree/master/packages/validator
+  if (error.name === 'BadRequestError') {
+    return {
+      statusCode: StatusCodes.BAD_REQUEST,
+      body: error.message
+    }
+  }
+
   return {
     statusCode: StatusCodes.INTERNAL_SERVER_ERROR,
     body: error.message
