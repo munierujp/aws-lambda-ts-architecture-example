@@ -1,11 +1,11 @@
 import { StatusCodes } from 'http-status-codes'
 import middy from '@middy/core'
 import { Controller } from '../controllers/users_userId'
-import { validator } from '../middlewares'
 import {
-  createErrorResponse,
-  importAws
-} from '../modules'
+  errorHandler,
+  validator
+} from '../middlewares'
+import { importAws } from '../modules'
 import type {
   APIGatewayProxyResult,
   Handler
@@ -20,15 +20,10 @@ export type Result = APIGatewayProxyResult
 
 export const handler = middyfy(async (event) => {
   const controller = new Controller({ aws })
-
-  try {
-    const result = await controller.execute(event)
-    return {
-      statusCode: StatusCodes.OK,
-      body: JSON.stringify(result)
-    }
-  } catch (e) {
-    return createErrorResponse(e)
+  const result = await controller.execute(event)
+  return {
+    statusCode: StatusCodes.OK,
+    body: JSON.stringify(result)
   }
 })
 
@@ -53,4 +48,5 @@ function middyfy (handler: Handler<Event, Result>): middy.Middy<Event, Result> {
         }
       }
     }))
+    .use(errorHandler())
 }

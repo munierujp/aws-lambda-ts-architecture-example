@@ -24,6 +24,16 @@ describe('createErrorResponse()', () => {
     })
   })
 
+  it(`returns ${StatusCodes.BAD_REQUEST} if error's name is BadRequestError`, () => {
+    const error = new Error('test error')
+    error.name = 'BadRequestError'
+
+    expect(createErrorResponse(error)).toEqual({
+      statusCode: StatusCodes.BAD_REQUEST,
+      body: error.message
+    })
+  })
+
   it(`returns ${StatusCodes.INTERNAL_SERVER_ERROR} if error is other`, () => {
     const error = new Error('test error')
 
