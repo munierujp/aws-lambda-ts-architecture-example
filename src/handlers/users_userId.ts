@@ -1,7 +1,7 @@
 import { StatusCodes } from 'http-status-codes'
 import middy from '@middy/core'
-import validator from '@middy/validator'
 import { Controller } from '../controllers/users_userId'
+import { validator } from '../middlewares'
 import {
   createErrorResponse,
   importAws
