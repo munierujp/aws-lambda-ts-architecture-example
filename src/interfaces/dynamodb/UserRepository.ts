@@ -20,9 +20,13 @@ export class UserRepository implements repositories.UserRepository {
   }
 
   async findById (id: string): Promise<User> {
+    return await this.get({ id })
+  }
+
+  private async get (key: DynamoDB.DocumentClient.Key): Promise<User> {
     const result = await this.db.get({
       TableName: this.tableName,
-      Key: { id }
+      Key: key
     }).promise()
     const item = result.Item
 
