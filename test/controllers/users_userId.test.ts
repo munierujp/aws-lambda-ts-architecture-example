@@ -1,11 +1,9 @@
+import { StatusCodes } from 'http-status-codes'
 import { InvalidMethodError } from '../../src/errors'
 import { Controller } from '../../src/controllers/users_userId'
 import { userGetter } from '../../src/usecases'
 import type AWS from 'aws-sdk'
-import type {
-  Event,
-  Result
-} from '../../src/controllers/users_userId'
+import type { Event } from '../../src/controllers/users_userId'
 
 describe('Controller', () => {
   const DocumentClientMock = jest.fn()
@@ -37,13 +35,16 @@ describe('Controller', () => {
       })
 
       it('returns result if error did not occur when executing executor', async () => {
-        const result: Result = {
+        const result: userGetter.Result = {
           id: 'test id',
           name: 'test name'
         }
         executeSpy.mockResolvedValue(result)
 
-        await expect(controller.execute(event)).resolves.toBe(result)
+        await expect(controller.execute(event)).resolves.toEqual({
+          statusCode: StatusCodes.OK,
+          body: JSON.stringify(result)
+        })
         expect(executeSpy).toBeCalledTimes(1)
       })
 
