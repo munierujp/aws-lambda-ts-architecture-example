@@ -58,11 +58,10 @@ function middyfy (handler: Handler<Event, Result>): middy.Middy<Event, Result> {
 }
 
 async function executeUserGetter (event: Event): Promise<Result> {
-  const { userId } = event.pathParameters
   const dynamodb = new DynamoDB.DocumentClient()
   const userRepo = new UserRepository(dynamodb)
   const userGetter = new UserGetter({ userRepo })
-  const result = await userGetter.get(userId)
+  const result = await userGetter.get(event.pathParameters.userId)
   return {
     statusCode: StatusCodes.OK,
     body: JSON.stringify(result)
