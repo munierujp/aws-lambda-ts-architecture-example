@@ -59,11 +59,8 @@ function middyfy (handler: Handler<Event, Result>): middy.Middy<Event, Result> {
 
 async function executeUserGetter (event: Event): Promise<Result> {
   const { userId } = event.pathParameters
-  const db = new DynamoDB.DocumentClient()
-  const userRepo = new UserRepository({
-    db,
-    tableName: 'users'
-  })
+  const dynamodb = new DynamoDB.DocumentClient()
+  const userRepo = new UserRepository(dynamodb)
   const userGetter = new UserGetter({ userRepo })
   const result = await userGetter.get(userId)
   return {

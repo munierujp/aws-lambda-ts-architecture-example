@@ -8,14 +8,10 @@ describe('UserRepository', () => {
     const getMock = jest.fn()
     const getPromiseMock = jest.fn()
 
-    const db = {
+    const dynamodb = {
       get: getMock
     } as unknown as DynamoDB.DocumentClient
-    const tableName = 'test tableName'
-    const repo = new UserRepository({
-      db,
-      tableName
-    })
+    const repo = new UserRepository(dynamodb)
 
     beforeEach(() => {
       getMock.mockReturnValue({
@@ -40,10 +36,6 @@ describe('UserRepository', () => {
 
       await expect(repo.findById(id)).resolves.toBe(user)
       expect(getMock).toBeCalledTimes(1)
-      expect(getMock).toBeCalledWith({
-        TableName: tableName,
-        Key: { id }
-      })
       expect(getPromiseMock).toBeCalledTimes(1)
     })
 
@@ -56,10 +48,6 @@ describe('UserRepository', () => {
 
       await expect(repo.findById(id)).rejects.toThrow(UserNotFoundError)
       expect(getMock).toBeCalledTimes(1)
-      expect(getMock).toBeCalledWith({
-        TableName: tableName,
-        Key: { id }
-      })
       expect(getPromiseMock).toBeCalledTimes(1)
     })
 
@@ -70,10 +58,6 @@ describe('UserRepository', () => {
 
       await expect(repo.findById(id)).rejects.toThrow(error)
       expect(getMock).toBeCalledTimes(1)
-      expect(getMock).toBeCalledWith({
-        TableName: tableName,
-        Key: { id }
-      })
       expect(getPromiseMock).toBeCalledTimes(1)
     })
   })
