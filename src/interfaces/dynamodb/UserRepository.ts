@@ -4,19 +4,13 @@ import type { DynamoDB } from 'aws-sdk'
 import type { User } from '../../domain/models'
 import type * as repositories from '../../domain/repositories'
 
-export class UserRepository implements repositories.UserRepository {
-  private readonly db: DynamoDB.DocumentClient
-  private readonly tableName: string
+const TABLE_NAME = 'users'
 
-  constructor ({
-    db,
-    tableName
-  }: {
-    db: DynamoDB.DocumentClient
-    tableName: string
-  }) {
-    this.db = db
-    this.tableName = tableName
+export class UserRepository implements repositories.UserRepository {
+  private readonly dynamodb: DynamoDB.DocumentClient
+
+  constructor (dynamodb: DynamoDB.DocumentClient) {
+    this.dynamodb = dynamodb
   }
 
   async findById (id: string): Promise<User> {
@@ -24,8 +18,8 @@ export class UserRepository implements repositories.UserRepository {
   }
 
   private async get (key: DynamoDB.DocumentClient.Key): Promise<User> {
-    const result = await this.db.get({
-      TableName: this.tableName,
+    const result = await this.dynamodb.get({
+      TableName: TABLE_NAME,
       Key: key
     }).promise()
     const item = result.Item
