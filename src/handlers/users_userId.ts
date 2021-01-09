@@ -8,7 +8,7 @@ import {
   errorHandler,
   validator
 } from '../middlewares'
-import { userGetter } from '../usecases'
+import { UserGetter } from '../usecases'
 import type {
   APIGatewayProxyEvent,
   APIGatewayProxyResult,
@@ -64,11 +64,8 @@ async function executeUserGetter (event: Event): Promise<Result> {
     db,
     tableName: 'users'
   })
-  const executor = new userGetter.Executor({
-    userId,
-    userRepo
-  })
-  const result = await executor.execute()
+  const userGetter = new UserGetter({ userRepo })
+  const result = await userGetter.get(userId)
   return {
     statusCode: StatusCodes.OK,
     body: JSON.stringify(result)

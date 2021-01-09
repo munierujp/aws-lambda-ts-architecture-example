@@ -1,23 +1,20 @@
-import { Executor } from '../../src/usecases/userGetter'
+import { UserGetter } from '../../src/usecases/UserGetter'
 import type { User } from '../../src/domain/models'
 
-describe('Executor', () => {
+describe('UserGetter', () => {
   const findByIdMock = jest.fn()
 
   const userId = 'test userId'
   const userRepo = {
     findById: findByIdMock
   }
-  const executor = new Executor({
-    userId,
-    userRepo
-  })
+  const userGetter = new UserGetter({ userRepo })
 
   afterEach(() => {
     findByIdMock.mockReset()
   })
 
-  describe('execute()', () => {
+  describe('get()', () => {
     it('returns user if error did not occur', async () => {
       const user: User = {
         id: 'test id',
@@ -25,7 +22,7 @@ describe('Executor', () => {
       }
       findByIdMock.mockResolvedValue(user)
 
-      await expect(executor.execute()).resolves.toBe(user)
+      await expect(userGetter.get(userId)).resolves.toBe(user)
       expect(findByIdMock).toBeCalledTimes(1)
       expect(findByIdMock).toBeCalledWith(userId)
     })
@@ -34,7 +31,7 @@ describe('Executor', () => {
       const error = new Error('test error')
       findByIdMock.mockRejectedValue(error)
 
-      await expect(executor.execute()).rejects.toThrow(error)
+      await expect(userGetter.get(userId)).rejects.toThrow(error)
       expect(findByIdMock).toBeCalledTimes(1)
       expect(findByIdMock).toBeCalledWith(userId)
     })
