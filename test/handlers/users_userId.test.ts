@@ -1,6 +1,6 @@
 import { StatusCodes } from 'http-status-codes'
 import { handler } from '../../src/handlers/users_userId'
-import { userGetter } from '../../src/usecases'
+import { UserGetter } from '../../src/usecases'
 import type { Result } from '../../src/handlers/users_userId'
 
 /* eslint-disable-next-line @typescript-eslint/no-var-requires */
@@ -8,7 +8,7 @@ const LambdaTester = require('lambda-tester')
 
 describe('handler()', () => {
   describe('if httpMethod is GET', () => {
-    const executeSpy = jest.spyOn(userGetter.Executor.prototype, 'execute')
+    const getSpy = jest.spyOn(UserGetter.prototype, 'get')
 
     const event = {
       httpMethod: 'GET',
@@ -18,15 +18,15 @@ describe('handler()', () => {
     }
 
     afterEach(() => {
-      executeSpy.mockReset()
+      getSpy.mockReset()
     })
 
     it(`returns ${StatusCodes.OK} response if error did not occur when executing userGetter`, async () => {
-      const result: userGetter.Result = {
+      const result = {
         id: 'test id',
         name: 'test name'
       }
-      executeSpy.mockResolvedValue(result)
+      getSpy.mockResolvedValue(result)
 
       await LambdaTester(handler)
         .event(event)
@@ -36,13 +36,13 @@ describe('handler()', () => {
         }: Result) => {
           expect(statusCode).toBe(StatusCodes.OK)
           expect(JSON.parse(body)).toEqual(result)
-          expect(executeSpy).toBeCalledTimes(1)
+          expect(getSpy).toBeCalledTimes(1)
         })
     })
 
     it(`returns ${StatusCodes.INTERNAL_SERVER_ERROR} response if error occurred when executing userGetter`, async () => {
       const error = new Error('test error')
-      executeSpy.mockRejectedValue(error)
+      getSpy.mockRejectedValue(error)
 
       await LambdaTester(handler)
         .event(event)
@@ -52,7 +52,7 @@ describe('handler()', () => {
         }: Result) => {
           expect(statusCode).toBe(StatusCodes.INTERNAL_SERVER_ERROR)
           expect(body).toBe(error.message)
-          expect(executeSpy).toBeCalledTimes(1)
+          expect(getSpy).toBeCalledTimes(1)
         })
     })
   })
