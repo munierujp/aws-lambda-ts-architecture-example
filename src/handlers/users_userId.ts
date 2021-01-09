@@ -1,3 +1,4 @@
+import { DynamoDB } from 'aws-sdk'
 import { HTTPMethod } from 'http-method-enum'
 import { StatusCodes } from 'http-status-codes'
 import middy from '@middy/core'
@@ -7,17 +8,12 @@ import {
   errorHandler,
   validator
 } from '../middlewares'
-import { importAws } from '../modules'
 import { userGetter } from '../usecases'
 import type {
   APIGatewayProxyEvent,
   APIGatewayProxyResult,
   Handler
 } from 'aws-lambda'
-
-const aws = importAws({
-  xray: '_X_AMZN_TRACE_ID' in process.env
-})
 
 export interface Event extends APIGatewayProxyEvent {
   pathParameters: {
@@ -63,7 +59,7 @@ function middyfy (handler: Handler<Event, Result>): middy.Middy<Event, Result> {
 
 async function executeUserGetter (event: Event): Promise<Result> {
   const { userId } = event.pathParameters
-  const db = new aws.DynamoDB.DocumentClient()
+  const db = new DynamoDB.DocumentClient()
   const userRepo = new UserRepository({
     db,
     tableName: 'users'
