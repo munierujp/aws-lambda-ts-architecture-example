@@ -61,9 +61,9 @@ async function executeUserGetter (event: Event): Promise<Result> {
   const dynamodb = new DynamoDB.DocumentClient()
   const userRepo = new UserRepository(dynamodb)
   const userGetter = new UserGetter({ userRepo })
-  const result = await userGetter.get(event.pathParameters.userId)
+  const user = await userGetter.get(event.pathParameters.userId)
   return {
     statusCode: StatusCodes.OK,
-    body: JSON.stringify(result)
+    body: JSON.stringify(user)
   }
 }

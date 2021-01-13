@@ -74,11 +74,11 @@ describe('handler()', () => {
     })
 
     it(`returns ${StatusCodes.OK} response if error did not occur when executing UserGetter`, async () => {
-      const result = {
+      const user = {
         id: 'test id',
         name: 'test name'
       }
-      getSpy.mockResolvedValue(result)
+      getSpy.mockResolvedValue(user)
 
       await LambdaTester(handler)
         .event(event)
@@ -87,7 +87,7 @@ describe('handler()', () => {
           body
         }: Result) => {
           expect(statusCode).toBe(StatusCodes.OK)
-          expect(JSON.parse(body)).toEqual(result)
+          expect(JSON.parse(body)).toEqual(user)
           expect(getSpy).toBeCalledTimes(1)
           expect(getSpy).toBeCalledWith(event.pathParameters.userId)
         })
