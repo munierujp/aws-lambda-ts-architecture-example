@@ -6,19 +6,23 @@ import {
 import { createErrorResponse } from '../../src/modules/createErrorResponse'
 
 describe('createErrorResponse()', () => {
-  it(`returns ${StatusCodes.NOT_IMPLEMENTED} if error is instance of InvalidMethodError`, () => {
+  it(`returns ${StatusCodes.NOT_IMPLEMENTED} if error is InvalidMethodError`, () => {
     const error = new InvalidMethodError('test error')
 
-    expect(createErrorResponse(error)).toEqual({
+    const resp = createErrorResponse(error)
+
+    expect(resp).toEqual({
       statusCode: StatusCodes.NOT_IMPLEMENTED,
       body: error.message
     })
   })
 
-  it(`returns ${StatusCodes.NOT_FOUND} if error is instance of UserNotFoundError`, () => {
+  it(`returns ${StatusCodes.NOT_FOUND} if error is UserNotFoundError`, () => {
     const error = new UserNotFoundError('test error')
 
-    expect(createErrorResponse(error)).toEqual({
+    const resp = createErrorResponse(error)
+
+    expect(resp).toEqual({
       statusCode: StatusCodes.NOT_FOUND,
       body: error.message
     })
@@ -28,7 +32,9 @@ describe('createErrorResponse()', () => {
     const error = new Error('test error')
     error.name = 'BadRequestError'
 
-    expect(createErrorResponse(error)).toEqual({
+    const resp = createErrorResponse(error)
+
+    expect(resp).toEqual({
       statusCode: StatusCodes.BAD_REQUEST,
       body: error.message
     })
@@ -37,7 +43,9 @@ describe('createErrorResponse()', () => {
   it(`returns ${StatusCodes.INTERNAL_SERVER_ERROR} if error is other`, () => {
     const error = new Error('test error')
 
-    expect(createErrorResponse(error)).toEqual({
+    const resp = createErrorResponse(error)
+
+    expect(resp).toEqual({
       statusCode: StatusCodes.INTERNAL_SERVER_ERROR,
       body: error.message
     })
