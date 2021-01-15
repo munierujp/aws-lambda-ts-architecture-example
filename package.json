@@ -11,7 +11,7 @@
   "dependencies": {
     "@middy/core": "1.5.1",
     "@middy/validator": "1.5.1",
-    "aws-sdk": "2.822.0",
+    "aws-sdk": "2.828.0",
     "http-method-enum": "1.0.0",
     "http-status-codes": "2.1.4",
     "lodash": "4.17.20"
