@@ -9,7 +9,7 @@
     "lint": "eslint --ignore-path .gitignore '**/*.{js,ts}'"
   },
   "dependencies": {
-    "@middy/core": "1.5.0",
+    "@middy/core": "1.5.1",
     "@middy/validator": "1.5.0",
     "aws-sdk": "2.822.0",
     "http-method-enum": "1.0.0",
