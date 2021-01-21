@@ -27,7 +27,7 @@ export const handler = middyfy(async (event) => {
 
   switch (httpMethod) {
     case HTTPMethod.GET:
-      return await executeUserGetter(event)
+      return await processGetEvent(event)
     default:
       throw new InvalidMethodError(`invalid method. httpMethod=${httpMethod}`)
   }
@@ -57,7 +57,7 @@ function middyfy (handler: Handler<Event, Result>): middy.Middy<Event, Result> {
     .use(errorHandler())
 }
 
-async function executeUserGetter (event: Event): Promise<Result> {
+async function processGetEvent (event: Event): Promise<Result> {
   const dynamodb = new DynamoDB.DocumentClient()
   const userRepo = new UserRepository(dynamodb)
   const userGetter = new UserGetter({ userRepo })
