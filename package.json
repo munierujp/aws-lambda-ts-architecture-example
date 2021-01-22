@@ -17,7 +17,7 @@
     "lodash": "4.17.20"
   },
   "devDependencies": {
-    "@types/aws-lambda": "8.10.70",
+    "@types/aws-lambda": "8.10.71",
     "@types/jest": "26.0.20",
     "@types/lodash": "4.14.168",
     "@types/node": "12.19.12",
