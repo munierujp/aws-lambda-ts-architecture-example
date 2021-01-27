@@ -1,14 +1,11 @@
-import { DynamoDB } from 'aws-sdk'
 import { HTTPMethod } from 'http-method-enum'
-import { StatusCodes } from 'http-status-codes'
 import middy from '@middy/core'
 import { InvalidMethodError } from '../../errors'
-import { UserRepository } from '../../interfaces/dynamodb'
 import {
   errorHandler,
   validator
 } from '../../middlewares'
-import { UserGetter } from '../../usecases'
+import { processGetEvent } from './processGetEvent'
 import type { Handler } from 'aws-lambda'
 import type { Event } from './Event'
 import type { Result } from './Result'
@@ -46,15 +43,4 @@ function middyfy (handler: Handler<Event, Result>): middy.Middy<Event, Result> {
       }
     }))
     .use(errorHandler())
-}
-
-async function processGetEvent (event: Event): Promise<Result> {
-  const dynamodb = new DynamoDB.DocumentClient()
-  const userRepo = new UserRepository(dynamodb)
-  const userGetter = new UserGetter({ userRepo })
-  const user = await userGetter.get(event.pathParameters.userId)
-  return {
-    statusCode: StatusCodes.OK,
-    body: JSON.stringify(user)
-  }
 }
