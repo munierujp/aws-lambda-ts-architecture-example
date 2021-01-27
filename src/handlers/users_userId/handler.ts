@@ -9,13 +9,9 @@ import {
   validator
 } from '../../middlewares'
 import { UserGetter } from '../../usecases'
-import type {
-  APIGatewayProxyResult,
-  Handler
-} from 'aws-lambda'
+import type { Handler } from 'aws-lambda'
 import type { Event } from './Event'
-
-export type Result = APIGatewayProxyResult
+import type { Result } from './Result'
 
 export const handler = middyfy(async (event) => {
   const httpMethod = event.httpMethod.toUpperCase()
