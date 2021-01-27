@@ -10,16 +10,11 @@ import {
 } from '../../middlewares'
 import { UserGetter } from '../../usecases'
 import type {
-  APIGatewayProxyEvent,
   APIGatewayProxyResult,
   Handler
 } from 'aws-lambda'
+import type { Event } from './Event'
 
-export interface Event extends APIGatewayProxyEvent {
-  pathParameters: {
-    userId: string
-  }
-}
 export type Result = APIGatewayProxyResult
 
 export const handler = middyfy(async (event) => {
