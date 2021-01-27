@@ -1,7 +1,7 @@
 import { StatusCodes } from 'http-status-codes'
-import { handler } from '../../src/handlers/users_userId'
-import { UserGetter } from '../../src/usecases'
-import type { Result } from '../../src/handlers/users_userId'
+import { handler } from '../../../src/handlers/users_userId/handler'
+import { UserGetter } from '../../../src/usecases'
+import type { Result } from '../../../src/handlers/users_userId/handler'
 
 /* eslint-disable-next-line @typescript-eslint/no-var-requires */
 const LambdaTester = require('lambda-tester')

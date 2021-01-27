@@ -2,13 +2,13 @@ import { DynamoDB } from 'aws-sdk'
 import { HTTPMethod } from 'http-method-enum'
 import { StatusCodes } from 'http-status-codes'
 import middy from '@middy/core'
-import { InvalidMethodError } from '../errors'
-import { UserRepository } from '../interfaces/dynamodb'
+import { InvalidMethodError } from '../../errors'
+import { UserRepository } from '../../interfaces/dynamodb'
 import {
   errorHandler,
   validator
-} from '../middlewares'
-import { UserGetter } from '../usecases'
+} from '../../middlewares'
+import { UserGetter } from '../../usecases'
 import type {
   APIGatewayProxyEvent,
   APIGatewayProxyResult,
