@@ -1,7 +1,7 @@
 import { StatusCodes } from 'http-status-codes'
-import { handler } from '../../src/handlers/users_userId'
-import { UserGetter } from '../../src/usecases'
-import type { Result } from '../../src/handlers/users_userId'
+import { handler } from '../../../src/handlers/users_userId/handler'
+import * as processGetEventModule from '../../../src/handlers/users_userId/processGetEvent'
+import type { Result } from '../../../src/handlers/users_userId/Result'
 
 /* eslint-disable-next-line @typescript-eslint/no-var-requires */
 const LambdaTester = require('lambda-tester')
@@ -11,8 +11,8 @@ describe('handler()', () => {
     const expectBadRequest = async (event: Record<string, any>): Promise<void> => {
       await LambdaTester(handler)
         .event(event)
-        .expectResult(({ statusCode }: Result) => {
-          expect(statusCode).toBe(StatusCodes.BAD_REQUEST)
+        .expectResult((result: Result) => {
+          expect(result.statusCode).toBe(StatusCodes.BAD_REQUEST)
         })
     }
 
@@ -38,13 +38,13 @@ describe('handler()', () => {
       .event({
         httpMethod: 'invalid httpMethod'
       })
-      .expectResult(({ statusCode }: Result) => {
-        expect(statusCode).toBe(StatusCodes.NOT_IMPLEMENTED)
+      .expectResult((result: Result) => {
+        expect(result.statusCode).toBe(StatusCodes.NOT_IMPLEMENTED)
       })
   })
 
   describe('if httpMethod is GET', () => {
-    const getSpy = jest.spyOn(UserGetter.prototype, 'get')
+    const processGetEventSpy = jest.spyOn(processGetEventModule, 'processGetEvent')
     const event = {
       httpMethod: 'GET',
       pathParameters: {
@@ -53,43 +53,36 @@ describe('handler()', () => {
     }
 
     afterEach(() => {
-      getSpy.mockReset()
+      processGetEventSpy.mockReset()
     })
 
-    it(`returns ${StatusCodes.INTERNAL_SERVER_ERROR} response if error occurred when executing UserGetter`, async () => {
+    it(`returns ${StatusCodes.INTERNAL_SERVER_ERROR} response if error occurred when executing processGetEvent`, async () => {
       const error = new Error('test error')
-      getSpy.mockRejectedValue(error)
+      processGetEventSpy.mockRejectedValue(error)
 
       await LambdaTester(handler)
         .event(event)
-        .expectResult(({
-          statusCode,
-          body
-        }: Result) => {
-          expect(statusCode).toBe(StatusCodes.INTERNAL_SERVER_ERROR)
-          expect(body).toBe(error.message)
-          expect(getSpy).toBeCalledTimes(1)
-          expect(getSpy).toBeCalledWith(event.pathParameters.userId)
+        .expectResult((result: Result) => {
+          expect(result.statusCode).toBe(StatusCodes.INTERNAL_SERVER_ERROR)
+          expect(result.body).toBe(error.message)
+          expect(processGetEventSpy).toBeCalledTimes(1)
+          expect(processGetEventSpy).toBeCalledWith(event)
         })
     })
 
-    it(`returns ${StatusCodes.OK} response if error did not occur when executing UserGetter`, async () => {
-      const user = {
-        id: 'test id',
-        name: 'test name'
+    it('returns response as is if error did not occur when executing processGetEvent', async () => {
+      const eventResult: Result = {
+        statusCode: StatusCodes.OK,
+        body: 'test body'
       }
-      getSpy.mockResolvedValue(user)
+      processGetEventSpy.mockResolvedValue(eventResult)
 
       await LambdaTester(handler)
         .event(event)
-        .expectResult(({
-          statusCode,
-          body
-        }: Result) => {
-          expect(statusCode).toBe(StatusCodes.OK)
-          expect(JSON.parse(body)).toEqual(user)
-          expect(getSpy).toBeCalledTimes(1)
-          expect(getSpy).toBeCalledWith(event.pathParameters.userId)
+        .expectResult((result: Result) => {
+          expect(result).toEqual(eventResult)
+          expect(processGetEventSpy).toBeCalledTimes(1)
+          expect(processGetEventSpy).toBeCalledWith(event)
         })
     })
   })
