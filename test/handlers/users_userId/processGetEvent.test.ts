@@ -16,27 +16,36 @@ describe('processGetEvent()', () => {
     getSpy.mockReset()
   })
 
-  it('throws error if it occurred when executing UserGetter', async () => {
+  describe('if error occurred when executing UserGetter', () => {
     const error = new Error('test error')
-    getSpy.mockRejectedValue(error)
 
-    await expect(processGetEvent(event)).rejects.toThrow(error)
-    expect(getSpy).toBeCalledTimes(1)
-    expect(getSpy).toBeCalledWith(event.pathParameters.userId)
+    beforeEach(() => {
+      getSpy.mockRejectedValue(error)
+    })
+
+    it('throws it', async () => {
+      await expect(processGetEvent(event)).rejects.toThrow(error)
+      expect(getSpy).toBeCalledTimes(1)
+      expect(getSpy).toBeCalledWith(event.pathParameters.userId)
+    })
   })
 
-  it(`returns ${StatusCodes.OK} response if succeeded to execute UserGetter`, async () => {
+  describe('if succeeded to execute UserGetter', () => {
     const user: User = {
       id: 'test id',
       name: 'test name'
     }
-    getSpy.mockResolvedValue(user)
 
-    const result = await processGetEvent(event)
+    beforeEach(() => {
+      getSpy.mockResolvedValue(user)
+    })
 
-    expect(result.statusCode).toBe(StatusCodes.OK)
-    expect(JSON.parse(result.body)).toEqual(user)
-    expect(getSpy).toBeCalledTimes(1)
-    expect(getSpy).toBeCalledWith(event.pathParameters.userId)
+    it(`returns ${StatusCodes.OK} response`, async () => {
+      const result = await processGetEvent(event)
+      expect(result.statusCode).toBe(StatusCodes.OK)
+      expect(JSON.parse(result.body)).toEqual(user)
+      expect(getSpy).toBeCalledTimes(1)
+      expect(getSpy).toBeCalledWith(event.pathParameters.userId)
+    })
   })
 })

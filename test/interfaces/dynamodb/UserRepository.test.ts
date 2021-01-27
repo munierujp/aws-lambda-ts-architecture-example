@@ -22,38 +22,52 @@ describe('UserRepository', () => {
       getMock.mockReset()
     })
 
-    it('throws error if it occurred when getting record', async () => {
+    describe('if error occurred when getting record', () => {
       const error = new Error('test error')
-      getPromiseMock.mockRejectedValue(error)
 
-      await expect(repo.findById('test id')).rejects.toThrow(error)
-      expect(getMock).toBeCalledTimes(1)
-      expect(getPromiseMock).toBeCalledTimes(1)
-    })
-
-    it('throws UserNotFoundError if record is empty', async () => {
-      getPromiseMock.mockResolvedValue({
-        Item: {}
+      beforeEach(() => {
+        getPromiseMock.mockRejectedValue(error)
       })
 
-      await expect(repo.findById('test id')).rejects.toThrow(UserNotFoundError)
-      expect(getMock).toBeCalledTimes(1)
-      expect(getPromiseMock).toBeCalledTimes(1)
+      it('throws it', async () => {
+        await expect(repo.findById('test id')).rejects.toThrow(error)
+        expect(getMock).toBeCalledTimes(1)
+        expect(getPromiseMock).toBeCalledTimes(1)
+      })
     })
 
-    it('returns record if it is not empty', async () => {
+    describe('if record is empty', () => {
+      beforeEach(() => {
+        getPromiseMock.mockResolvedValue({
+          Item: {}
+        })
+      })
+
+      it('throws UserNotFoundError', async () => {
+        await expect(repo.findById('test id')).rejects.toThrow(UserNotFoundError)
+        expect(getMock).toBeCalledTimes(1)
+        expect(getPromiseMock).toBeCalledTimes(1)
+      })
+    })
+
+    describe('if record is not empty', () => {
       const id = 'test id'
       const user = {
         id,
         name: 'test name'
       }
-      getPromiseMock.mockResolvedValue({
-        Item: user
+
+      beforeEach(() => {
+        getPromiseMock.mockResolvedValue({
+          Item: user
+        })
       })
 
-      await expect(repo.findById(id)).resolves.toBe(user)
-      expect(getMock).toBeCalledTimes(1)
-      expect(getPromiseMock).toBeCalledTimes(1)
+      it('returns it', async () => {
+        await expect(repo.findById(id)).resolves.toBe(user)
+        expect(getMock).toBeCalledTimes(1)
+        expect(getPromiseMock).toBeCalledTimes(1)
+      })
     })
   })
 })

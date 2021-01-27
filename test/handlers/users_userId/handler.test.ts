@@ -7,40 +7,48 @@ import type { Result } from '../../../src/handlers/users_userId/Result'
 const LambdaTester = require('lambda-tester')
 
 describe('handler()', () => {
-  describe(`returns ${StatusCodes.BAD_REQUEST} response if validation error occurred`, () => {
-    const expectBadRequest = async (event: Record<string, any>): Promise<void> => {
+  describe('if event.pathParameters.userId does not exist', () => {
+    const event = {
+      pathParameters: {}
+    }
+
+    it(`returns ${StatusCodes.BAD_REQUEST} response`, async () => {
       await LambdaTester(handler)
         .event(event)
         .expectResult((result: Result) => {
           expect(result.statusCode).toBe(StatusCodes.BAD_REQUEST)
         })
-    }
-
-    // eslint-disable-next-line jest/expect-expect
-    it(`returns ${StatusCodes.BAD_REQUEST} response if pathParameters.userId does not exist`, async () => {
-      await expectBadRequest({
-        pathParameters: {}
-      })
-    })
-
-    // eslint-disable-next-line jest/expect-expect
-    it(`returns ${StatusCodes.BAD_REQUEST} response if pathParameters.userId is invalid`, async () => {
-      await expectBadRequest({
-        pathParameters: {
-          userId: '1234567890123456789012345678901'
-        }
-      })
     })
   })
 
-  it(`returns ${StatusCodes.NOT_IMPLEMENTED} response if httpMethod is invalid`, async () => {
-    await LambdaTester(handler)
-      .event({
-        httpMethod: 'invalid httpMethod'
-      })
-      .expectResult((result: Result) => {
-        expect(result.statusCode).toBe(StatusCodes.NOT_IMPLEMENTED)
-      })
+  describe('if event.pathParameters.userId is invalid', () => {
+    const event = {
+      pathParameters: {
+        userId: '1234567890123456789012345678901'
+      }
+    }
+
+    it(`returns ${StatusCodes.BAD_REQUEST} response`, async () => {
+      await LambdaTester(handler)
+        .event(event)
+        .expectResult((result: Result) => {
+          expect(result.statusCode).toBe(StatusCodes.BAD_REQUEST)
+        })
+    })
+  })
+
+  describe('if event.httpMethod is invalid', () => {
+    const event = {
+      httpMethod: 'invalid httpMethod'
+    }
+
+    it(`returns ${StatusCodes.NOT_IMPLEMENTED} response`, async () => {
+      await LambdaTester(handler)
+        .event(event)
+        .expectResult((result: Result) => {
+          expect(result.statusCode).toBe(StatusCodes.NOT_IMPLEMENTED)
+        })
+    })
   })
 
   describe('if httpMethod is GET', () => {
@@ -56,34 +64,44 @@ describe('handler()', () => {
       processGetEventSpy.mockReset()
     })
 
-    it(`returns ${StatusCodes.INTERNAL_SERVER_ERROR} response if error occurred when executing processGetEvent`, async () => {
+    describe('if error occurred when executing processGetEvent', () => {
       const error = new Error('test error')
-      processGetEventSpy.mockRejectedValue(error)
 
-      await LambdaTester(handler)
-        .event(event)
-        .expectResult((result: Result) => {
-          expect(result.statusCode).toBe(StatusCodes.INTERNAL_SERVER_ERROR)
-          expect(result.body).toBe(error.message)
-          expect(processGetEventSpy).toBeCalledTimes(1)
-          expect(processGetEventSpy).toBeCalledWith(event)
-        })
+      beforeEach(() => {
+        processGetEventSpy.mockRejectedValue(error)
+      })
+
+      it(`returns ${StatusCodes.INTERNAL_SERVER_ERROR} response`, async () => {
+        await LambdaTester(handler)
+          .event(event)
+          .expectResult((result: Result) => {
+            expect(result.statusCode).toBe(StatusCodes.INTERNAL_SERVER_ERROR)
+            expect(result.body).toBe(error.message)
+            expect(processGetEventSpy).toBeCalledTimes(1)
+            expect(processGetEventSpy).toBeCalledWith(event)
+          })
+      })
     })
 
-    it('returns response as is if error did not occur when executing processGetEvent', async () => {
+    describe('if error did not occur when executing processGetEvent', () => {
       const eventResult: Result = {
         statusCode: StatusCodes.OK,
         body: 'test body'
       }
-      processGetEventSpy.mockResolvedValue(eventResult)
 
-      await LambdaTester(handler)
-        .event(event)
-        .expectResult((result: Result) => {
-          expect(result).toEqual(eventResult)
-          expect(processGetEventSpy).toBeCalledTimes(1)
-          expect(processGetEventSpy).toBeCalledWith(event)
-        })
+      beforeEach(() => {
+        processGetEventSpy.mockResolvedValue(eventResult)
+      })
+
+      it('returns response as is', async () => {
+        await LambdaTester(handler)
+          .event(event)
+          .expectResult((result: Result) => {
+            expect(result).toEqual(eventResult)
+            expect(processGetEventSpy).toBeCalledTimes(1)
+            expect(processGetEventSpy).toBeCalledWith(event)
+          })
+      })
     })
   })
 })
