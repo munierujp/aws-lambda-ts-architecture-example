@@ -16,7 +16,7 @@ describe('processGetEvent()', () => {
     getSpy.mockReset()
   })
 
-  it('throws error if it occurred', async () => {
+  it('throws error if it occurred when executing UserGetter', async () => {
     const error = new Error('test error')
     getSpy.mockRejectedValue(error)
 
@@ -25,7 +25,7 @@ describe('processGetEvent()', () => {
     expect(getSpy).toBeCalledWith(event.pathParameters.userId)
   })
 
-  it(`returns ${StatusCodes.OK} response if error did not occur`, async () => {
+  it(`returns ${StatusCodes.OK} response if succeeded to execute UserGetter`, async () => {
     const user: User = {
       id: 'test id',
       name: 'test name'
