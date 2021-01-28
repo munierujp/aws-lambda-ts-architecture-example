@@ -1,4 +1,3 @@
-import { UserNotFoundError } from '../../../src/errors'
 import { UserRepository } from '../../../src/interfaces/dynamodb/UserRepository'
 import type { DynamoDB } from 'aws-sdk'
 
@@ -37,14 +36,16 @@ describe('UserRepository', () => {
     })
 
     describe('if record is empty', () => {
+      const id = 'test id'
+
       beforeEach(() => {
         getPromiseMock.mockResolvedValue({
           Item: {}
         })
       })
 
-      it('throws UserNotFoundError', async () => {
-        await expect(repo.findById('test id')).rejects.toThrow(UserNotFoundError)
+      it('returns undefined', async () => {
+        await expect(repo.findById(id)).resolves.toBeUndefined()
         expect(getMock).toBeCalledTimes(1)
         expect(getPromiseMock).toBeCalledTimes(1)
       })

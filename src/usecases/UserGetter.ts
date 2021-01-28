@@ -1,5 +1,6 @@
 import type { User } from '../domain/models'
 import type { UserRepository } from '../domain/repositories'
+import { UserNotFoundError } from '../errors'
 
 export class UserGetter {
   private readonly userRepo: UserRepository
@@ -13,6 +14,12 @@ export class UserGetter {
   }
 
   async get (userId: string): Promise<User> {
-    return await this.userRepo.findById(userId)
+    const user = await this.userRepo.findById(userId)
+
+    if (user === undefined) {
+      throw new UserNotFoundError('user not found')
+    }
+
+    return user
   }
 }

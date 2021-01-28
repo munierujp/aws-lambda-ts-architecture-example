@@ -1,5 +1,4 @@
 import { isEmpty } from 'lodash'
-import { UserNotFoundError } from '../../errors'
 import type { DynamoDB } from 'aws-sdk'
 import type { User } from '../../domain/models'
 import type * as repositories from '../../domain/repositories'
@@ -13,7 +12,7 @@ export class UserRepository implements repositories.UserRepository {
     this.dynamodb = dynamodb
   }
 
-  async findById (id: string): Promise<User> {
+  async findById (id: string): Promise<User | undefined> {
     const result = await this.dynamodb.get({
       TableName: TABLE_NAME,
       Key: { id }
@@ -21,7 +20,7 @@ export class UserRepository implements repositories.UserRepository {
     const item = result.Item
 
     if (item === undefined || isEmpty(item)) {
-      throw new UserNotFoundError('user not found')
+      return undefined
     }
 
     return item as User

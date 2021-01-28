@@ -1,3 +1,4 @@
+import { UserNotFoundError } from '../../src/errors'
 import { UserGetter } from '../../src/usecases/UserGetter'
 
 describe('UserGetter', () => {
@@ -12,22 +13,21 @@ describe('UserGetter', () => {
   })
 
   describe('get()', () => {
-    describe('if error occurred when getting user', () => {
+    describe('if failed to get user', () => {
       const userId = 'test id'
-      const error = new Error('test error')
 
       beforeEach(() => {
-        findByIdMock.mockRejectedValue(error)
+        findByIdMock.mockResolvedValue(undefined)
       })
 
-      it('throws it', async () => {
-        await expect(userGetter.get(userId)).rejects.toThrow(error)
+      it('throws UserNotFoundError', async () => {
+        await expect(userGetter.get(userId)).rejects.toThrow(UserNotFoundError)
         expect(findByIdMock).toBeCalledTimes(1)
         expect(findByIdMock).toBeCalledWith(userId)
       })
     })
 
-    describe('if error did not occur when getting user', () => {
+    describe('if succeeded to get user', () => {
       const userId = 'test id'
       const user = {
         id: userId,
@@ -38,7 +38,7 @@ describe('UserGetter', () => {
         findByIdMock.mockResolvedValue(user)
       })
 
-      it('returns user', async () => {
+      it('returns it', async () => {
         await expect(userGetter.get(userId)).resolves.toBe(user)
         expect(findByIdMock).toBeCalledTimes(1)
         expect(findByIdMock).toBeCalledWith(userId)
