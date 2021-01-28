@@ -16,7 +16,7 @@ describe('processGetEvent()', () => {
     getSpy.mockReset()
   })
 
-  describe('if error occurred when executing UserGetter', () => {
+  describe('if UserGetter throws error', () => {
     const error = new Error('test error')
 
     beforeEach(() => {
@@ -30,7 +30,7 @@ describe('processGetEvent()', () => {
     })
   })
 
-  describe('if succeeded to execute UserGetter', () => {
+  describe('if UserGetter does not throw error', () => {
     const user: User = {
       id: 'test id',
       name: 'test name'

@@ -21,7 +21,7 @@ describe('UserRepository', () => {
       getMock.mockReset()
     })
 
-    describe('if error occurred when getting record', () => {
+    describe('if dynamodb throws error', () => {
       const error = new Error('test error')
 
       beforeEach(() => {
