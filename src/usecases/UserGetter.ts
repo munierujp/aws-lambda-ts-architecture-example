@@ -13,10 +13,6 @@ export class UserGetter {
   }
 
   async get (userId: string): Promise<User> {
-    return await this.fetchUser(userId)
-  }
-
-  private async fetchUser (userId: string): Promise<User> {
     return await this.userRepo.findById(userId)
   }
 }
