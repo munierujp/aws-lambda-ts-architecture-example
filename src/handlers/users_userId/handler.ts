@@ -26,6 +26,9 @@ function middyfy (handler: Handler<Event, Result>): middy.Middy<Event, Result> {
     .use(validator({
       inputSchema: {
         type: 'object',
+        required: [
+          'pathParameters'
+        ],
         properties: {
           pathParameters: {
             type: 'object',

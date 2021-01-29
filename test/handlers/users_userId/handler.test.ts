@@ -7,6 +7,18 @@ import type { Result } from '../../../src/handlers/users_userId/Result'
 const LambdaTester = require('lambda-tester')
 
 describe('handler()', () => {
+  describe('if event.pathParameters does not exist', () => {
+    const event = {}
+
+    it(`returns ${StatusCodes.BAD_REQUEST} response`, () => {
+      return LambdaTester(handler)
+        .event(event)
+        .expectResult(({ statusCode }: Result) => {
+          expect(statusCode).toBe(StatusCodes.BAD_REQUEST)
+        })
+    })
+  })
+
   describe('if event.pathParameters.userId does not exist', () => {
     const event = {
       pathParameters: {}
