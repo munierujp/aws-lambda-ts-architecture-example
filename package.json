@@ -14,7 +14,7 @@
     "aws-sdk": "2.822.0",
     "http-method-enum": "1.0.0",
     "http-status-codes": "2.1.4",
-    "lodash": "4.14.2"
+    "lodash": "4.17.20"
   },
   "devDependencies": {
     "@types/aws-lambda": "8.10.71",
