@@ -5,8 +5,8 @@
   "private": true,
   "scripts": {
     "build": "tsc --project tsconfig.build.json",
-    "test": "jest --passWithNoTests",
-    "lint": "eslint --ignore-path .gitignore '**/*.{js,ts}'"
+    "lint": "eslint --ignore-path .gitignore '**/*.{js,ts}'",
+    "test": "jest --passWithNoTests"
   },
   "dependencies": {
     "@middy/core": "1.5.2",
