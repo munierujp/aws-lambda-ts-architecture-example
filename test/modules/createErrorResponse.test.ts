@@ -1,8 +1,5 @@
 import { StatusCodes } from 'http-status-codes'
-import {
-  InvalidMethodError,
-  UserNotFoundError
-} from '../../src/errors'
+import { InvalidMethodError } from '../../src/errors'
 import { createErrorResponse } from '../../src/modules/createErrorResponse'
 
 describe('createErrorResponse()', () => {
@@ -12,17 +9,6 @@ describe('createErrorResponse()', () => {
     it(`returns ${StatusCodes.NOT_IMPLEMENTED}`, () => {
       expect(createErrorResponse(error)).toEqual({
         statusCode: StatusCodes.NOT_IMPLEMENTED,
-        body: error.message
-      })
-    })
-  })
-
-  describe('if error is UserNotFoundError', () => {
-    const error = new UserNotFoundError('test error')
-
-    it(`returns ${StatusCodes.NOT_FOUND}`, () => {
-      expect(createErrorResponse(error)).toEqual({
-        statusCode: StatusCodes.NOT_FOUND,
         body: error.message
       })
     })

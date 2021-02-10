@@ -1,8 +1,13 @@
+import {
+  left,
+  right
+} from 'fp-ts/lib/Either'
 import { StatusCodes } from 'http-status-codes'
-import { processGetEvent } from '../../../src/handlers/users_userId/processGetEvent'
-import { UserGetter } from '../../../src/usecases'
+import { UserNotFoundError } from '../../../src/errors'
 import type { User } from '../../../src/domain/models'
 import type { Event } from '../../../src/handlers/users_userId/Event'
+import { processGetEvent } from '../../../src/handlers/users_userId/processGetEvent'
+import { UserGetter } from '../../../src/usecases'
 
 describe('processGetEvent()', () => {
   const getSpy = jest.spyOn(UserGetter.prototype, 'get')
@@ -16,28 +21,30 @@ describe('processGetEvent()', () => {
     getSpy.mockReset()
   })
 
-  describe('if UserGetter throws error', () => {
-    const error = new Error('test error')
+  describe('if UserGetter#get returns Left<UserNotFoundError>', () => {
+    const error = new UserNotFoundError('test error')
 
     beforeEach(() => {
-      getSpy.mockRejectedValue(error)
+      getSpy.mockResolvedValue(left(error))
     })
 
-    it('throws it', async () => {
-      await expect(processGetEvent(event)).rejects.toThrow(error)
+    it(`returns ${StatusCodes.NOT_FOUND} response`, async () => {
+      const result = await processGetEvent(event)
+      expect(result.statusCode).toBe(StatusCodes.NOT_FOUND)
+      expect(result.body).toBe(error.message)
       expect(getSpy).toBeCalledTimes(1)
       expect(getSpy).toBeCalledWith(event.pathParameters.userId)
     })
   })
 
-  describe('if UserGetter does not throw error', () => {
+  describe('if UserGetter#get returns Right<User>', () => {
     const user: User = {
       id: 'test id',
       name: 'test name'
     }
 
     beforeEach(() => {
-      getSpy.mockResolvedValue(user)
+      getSpy.mockResolvedValue(right(user))
     })
 
     it(`returns ${StatusCodes.OK} response`, async () => {

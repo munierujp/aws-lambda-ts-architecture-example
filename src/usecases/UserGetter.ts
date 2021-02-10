@@ -1,4 +1,6 @@
-import { isNone } from 'fp-ts/lib/Option'
+import { fromOption } from 'fp-ts/lib/Either'
+import type { Either } from 'fp-ts/lib/Either'
+import { pipe } from 'fp-ts/lib/pipeable'
 import type { User } from '../domain/models'
 import type { UserRepository } from '../domain/repositories'
 import { UserNotFoundError } from '../errors'
@@ -14,14 +16,11 @@ export class UserGetter {
     this.userRepo = userRepo
   }
 
-  async get (userId: string): Promise<User> {
+  async get (userId: string): Promise<Either<UserNotFoundError, User>> {
     const optionalUser = await this.userRepo.findById(userId)
-
-    if (isNone(optionalUser)) {
-      throw new UserNotFoundError('user not found')
-    }
-
-    const user = optionalUser.value
-    return user
+    return pipe(
+      optionalUser,
+      fromOption(() => new UserNotFoundError('user not found'))
+    )
   }
 }

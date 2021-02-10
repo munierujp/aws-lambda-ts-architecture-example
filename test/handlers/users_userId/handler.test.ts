@@ -75,52 +75,27 @@ describe('handler()', () => {
         httpMethod: 'GET',
         pathParameters
       }
+      const eventResult: Result = {
+        statusCode: StatusCodes.OK,
+        body: 'test body'
+      }
+
+      beforeEach(() => {
+        processGetEventSpy.mockResolvedValue(eventResult)
+      })
 
       afterEach(() => {
         processGetEventSpy.mockReset()
       })
 
-      describe('if processGetEvent throws error', () => {
-        const error = new Error('test error')
-
-        beforeEach(() => {
-          processGetEventSpy.mockRejectedValue(error)
-        })
-
-        it(`returns ${StatusCodes.INTERNAL_SERVER_ERROR} response`, () => {
-          return LambdaTester(handler)
-            .event(event)
-            .expectResult(({
-              statusCode,
-              body
-            }: Result) => {
-              expect(statusCode).toBe(StatusCodes.INTERNAL_SERVER_ERROR)
-              expect(body).toBe(error.message)
-              expect(processGetEventSpy).toBeCalledTimes(1)
-              expect(processGetEventSpy).toBeCalledWith(event)
-            })
-        })
-      })
-
-      describe('if processGetEvent does not throw error', () => {
-        const eventResult: Result = {
-          statusCode: StatusCodes.OK,
-          body: 'test body'
-        }
-
-        beforeEach(() => {
-          processGetEventSpy.mockResolvedValue(eventResult)
-        })
-
-        it('returns response as is', () => {
-          return LambdaTester(handler)
-            .event(event)
-            .expectResult((result: Result) => {
-              expect(result).toBe(eventResult)
-              expect(processGetEventSpy).toBeCalledTimes(1)
-              expect(processGetEventSpy).toBeCalledWith(event)
-            })
-        })
+      it('returns response as is', () => {
+        return LambdaTester(handler)
+          .event(event)
+          .expectResult((result: Result) => {
+            expect(result).toBe(eventResult)
+            expect(processGetEventSpy).toBeCalledTimes(1)
+            expect(processGetEventSpy).toBeCalledWith(event)
+          })
       })
     })
   })
