@@ -23,6 +23,7 @@ export class UserRepository implements repositories.UserRepository {
       return undefined
     }
 
+    // TODO: プロパティの存在チェックをする
     return item as User
   }
 }
