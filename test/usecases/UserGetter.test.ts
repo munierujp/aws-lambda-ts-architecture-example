@@ -1,3 +1,7 @@
+import {
+  none,
+  some
+} from 'fp-ts/lib/Option'
 import { UserNotFoundError } from '../../src/errors'
 import { UserGetter } from '../../src/usecases/UserGetter'
 
@@ -17,7 +21,7 @@ describe('UserGetter', () => {
       const userId = 'test id'
 
       beforeEach(() => {
-        findByIdMock.mockResolvedValue(undefined)
+        findByIdMock.mockResolvedValue(none)
       })
 
       it('throws UserNotFoundError', async () => {
@@ -35,7 +39,7 @@ describe('UserGetter', () => {
       }
 
       beforeEach(() => {
-        findByIdMock.mockResolvedValue(user)
+        findByIdMock.mockResolvedValue(some(user))
       })
 
       it('returns it', async () => {

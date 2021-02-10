@@ -1,5 +1,11 @@
-import { isEmpty } from 'lodash'
 import type { DynamoDB } from 'aws-sdk'
+import {
+  filter,
+  fromNullable
+} from 'fp-ts/lib/Option'
+import type { Option } from 'fp-ts/lib/Option'
+import { pipe } from 'fp-ts/lib/pipeable'
+import { isUser } from '../../domain/models'
 import type { User } from '../../domain/models'
 import type * as repositories from '../../domain/repositories'
 
@@ -12,18 +18,14 @@ export class UserRepository implements repositories.UserRepository {
     this.dynamodb = dynamodb
   }
 
-  async findById (id: string): Promise<User | undefined> {
+  async findById (id: string): Promise<Option<User>> {
     const result = await this.dynamodb.get({
       TableName: TABLE_NAME,
       Key: { id }
     }).promise()
-    const item = result.Item
-
-    if (item === undefined || isEmpty(item)) {
-      return undefined
-    }
-
-    // TODO: プロパティの存在チェックをする
-    return item as User
+    return pipe(
+      fromNullable(result.Item),
+      filter(isUser)
+    )
   }
 }
