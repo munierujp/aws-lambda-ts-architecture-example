@@ -12,14 +12,14 @@
     "@middy/core": "1.5.2",
     "@middy/validator": "1.5.2",
     "aws-sdk": "2.822.0",
+    "fp-ts": "^2.9.5",
     "http-method-enum": "1.0.0",
     "http-status-codes": "2.1.4",
-    "lodash": "4.14.2"
+    "io-ts": "^2.2.14"
   },
   "devDependencies": {
     "@types/aws-lambda": "8.10.71",
     "@types/jest": "26.0.20",
-    "@types/lodash": "4.14.168",
     "@types/node": "12.19.12",
     "@typescript-eslint/eslint-plugin": "4.14.2",
     "eslint": "7.19.0",

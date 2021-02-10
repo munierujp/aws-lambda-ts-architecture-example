@@ -1,3 +1,4 @@
+import { isNone } from 'fp-ts/lib/Option'
 import type { User } from '../domain/models'
 import type { UserRepository } from '../domain/repositories'
 import { UserNotFoundError } from '../errors'
@@ -14,12 +15,13 @@ export class UserGetter {
   }
 
   async get (userId: string): Promise<User> {
-    const user = await this.userRepo.findById(userId)
+    const optionalUser = await this.userRepo.findById(userId)
 
-    if (user === undefined) {
+    if (isNone(optionalUser)) {
       throw new UserNotFoundError('user not found')
     }
 
+    const user = optionalUser.value
     return user
   }
 }
