@@ -18,7 +18,7 @@
     "io-ts": "^2.2.14"
   },
   "devDependencies": {
-    "@types/aws-lambda": "8.10.71",
+    "@types/aws-lambda": "8.10.72",
     "@types/jest": "26.0.20",
     "@types/node": "12.19.12",
     "@typescript-eslint/eslint-plugin": "4.14.2",
