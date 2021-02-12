@@ -27,20 +27,6 @@ describe('UserRepository', () => {
       getMock.mockReset()
     })
 
-    describe('if dynamodb throws error', () => {
-      const error = new Error('test error')
-
-      beforeEach(() => {
-        getPromiseMock.mockRejectedValue(error)
-      })
-
-      it('throws it', async () => {
-        await expect(repo.findById('test id')).rejects.toThrow(error)
-        expect(getMock).toBeCalledTimes(1)
-        expect(getPromiseMock).toBeCalledTimes(1)
-      })
-    })
-
     describe('if record is invalid as User', () => {
       const id = 'test id'
 
