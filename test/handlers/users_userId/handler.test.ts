@@ -1,6 +1,11 @@
+import {
+  none,
+  some
+} from 'fp-ts/lib/Option'
 import { StatusCodes } from 'http-status-codes'
+import * as createEventProcessorModule from '../../../src/handlers/users_userId/createEventProcessor'
+import { GetEventProcessor } from '../../../src/handlers/users_userId/GetEventProcessor'
 import { handler } from '../../../src/handlers/users_userId/handler'
-import * as processGetEventModule from '../../../src/handlers/users_userId/processGetEvent'
 import type { Result } from '../../../src/handlers/users_userId/Result'
 
 /* eslint-disable-next-line @typescript-eslint/no-var-requires */
@@ -50,15 +55,21 @@ describe('handler()', () => {
   })
 
   describe('if event is valid', () => {
-    const pathParameters = {
-      userId: '12345678901234567890123456789012'
+    const createEventProcessorSpy = jest.spyOn(createEventProcessorModule, 'createEventProcessor')
+    const event = {
+      pathParameters: {
+        userId: '12345678901234567890123456789012'
+      }
     }
 
-    describe('if event.httpMethod is invalid', () => {
-      const event = {
-        httpMethod: 'invalid httpMethod',
-        pathParameters
-      }
+    afterEach(() => {
+      createEventProcessorSpy.mockReset()
+    })
+
+    describe('if createEventProcessor returns None', () => {
+      beforeEach(() => {
+        createEventProcessorSpy.mockReturnValue(none)
+      })
 
       it(`returns ${StatusCodes.NOT_IMPLEMENTED} response`, () => {
         return LambdaTester(handler)
@@ -69,23 +80,23 @@ describe('handler()', () => {
       })
     })
 
-    describe('if httpMethod is GET', () => {
-      const processGetEventSpy = jest.spyOn(processGetEventModule, 'processGetEvent')
-      const event = {
-        httpMethod: 'GET',
-        pathParameters
-      }
+    describe('if createEventProcessor returns Some<GetEventProcessor>', () => {
+      const processSpy = jest.spyOn(GetEventProcessor.prototype, 'process')
+      const processor = {
+        process: processSpy
+      } as unknown as GetEventProcessor
       const eventResult: Result = {
         statusCode: StatusCodes.OK,
         body: 'test body'
       }
 
       beforeEach(() => {
-        processGetEventSpy.mockResolvedValue(eventResult)
+        processSpy.mockResolvedValue(eventResult)
+        createEventProcessorSpy.mockReturnValue(some(processor))
       })
 
       afterEach(() => {
-        processGetEventSpy.mockReset()
+        processSpy.mockReset()
       })
 
       it('returns response as is', () => {
@@ -93,8 +104,8 @@ describe('handler()', () => {
           .event(event)
           .expectResult((result: Result) => {
             expect(result).toBe(eventResult)
-            expect(processGetEventSpy).toBeCalledTimes(1)
-            expect(processGetEventSpy).toBeCalledWith(event)
+            expect(processSpy).toBeCalledTimes(1)
+            expect(processSpy).toBeCalledWith(event)
           })
       })
     })

@@ -1,24 +1,25 @@
-import { HTTPMethod } from 'http-method-enum'
+import type { Handler } from 'aws-lambda'
+import { isNone } from 'fp-ts/lib/Option'
 import middy from '@middy/core'
 import { InvalidMethodError } from '../../errors'
 import {
   errorHandler,
   validator
 } from '../../middlewares'
-import { processGetEvent } from './processGetEvent'
-import type { Handler } from 'aws-lambda'
+import { createEventProcessor } from './createEventProcessor'
 import type { Event } from './Event'
 import type { Result } from './Result'
 
 export const handler = middyfy(async (event) => {
-  const httpMethod = event.httpMethod.toUpperCase()
+  const { httpMethod } = event
+  const optionalProcessor = createEventProcessor(httpMethod)
 
-  switch (httpMethod) {
-    case HTTPMethod.GET:
-      return await processGetEvent(event)
-    default:
-      throw new InvalidMethodError(`invalid method. httpMethod=${httpMethod}`)
+  if (isNone(optionalProcessor)) {
+    throw new InvalidMethodError(`invalid method. httpMethod=${httpMethod}`)
   }
+
+  const processor = optionalProcessor.value
+  return await processor.process(event)
 })
 
 function middyfy (handler: Handler<Event, Result>): middy.Middy<Event, Result> {
