@@ -7,7 +7,7 @@ import type { Option } from 'fp-ts/lib/Option'
 import { HTTPMethod } from 'http-method-enum'
 import { UserRepository } from '../../interfaces/dynamodb'
 import { UserGetter } from '../../usecases'
-import { GetEventProcessor } from './processGetEvent'
+import { GetEventProcessor } from './GetEventProcessor'
 
 export function createEventProcessor (httpMethod: string): Option<GetEventProcessor> {
   httpMethod = httpMethod.toUpperCase()

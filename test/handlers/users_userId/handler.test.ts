@@ -4,8 +4,8 @@ import {
 } from 'fp-ts/lib/Option'
 import { StatusCodes } from 'http-status-codes'
 import * as createEventProcessorModule from '../../../src/handlers/users_userId/createEventProcessor'
+import { GetEventProcessor } from '../../../src/handlers/users_userId/GetEventProcessor'
 import { handler } from '../../../src/handlers/users_userId/handler'
-import { GetEventProcessor } from '../../../src/handlers/users_userId/processGetEvent'
 import type { Result } from '../../../src/handlers/users_userId/Result'
 
 /* eslint-disable-next-line @typescript-eslint/no-var-requires */

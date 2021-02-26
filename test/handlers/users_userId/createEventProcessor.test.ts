@@ -5,7 +5,7 @@ import {
 import type { Some } from 'fp-ts/lib/Option'
 import { HTTPMethod } from 'http-method-enum'
 import { createEventProcessor } from '../../../src/handlers/users_userId/createEventProcessor'
-import { GetEventProcessor } from '../../../src/handlers/users_userId/processGetEvent'
+import { GetEventProcessor } from '../../../src/handlers/users_userId/GetEventProcessor'
 
 describe('createEventProcessor()', () => {
   describe('if httpMethod is invalid', () => {

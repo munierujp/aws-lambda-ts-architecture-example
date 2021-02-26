@@ -6,7 +6,7 @@ import { StatusCodes } from 'http-status-codes'
 import { UserNotFoundError } from '../../../src/errors'
 import type { User } from '../../../src/domain/models'
 import type { Event } from '../../../src/handlers/users_userId/Event'
-import { GetEventProcessor } from '../../../src/handlers/users_userId/processGetEvent'
+import { GetEventProcessor } from '../../../src/handlers/users_userId/GetEventProcessor'
 import { UserGetter } from '../../../src/usecases'
 
 describe('GetEventProcessor', () => {
