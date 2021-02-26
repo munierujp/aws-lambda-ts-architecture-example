@@ -1,11 +1,11 @@
-import type { APIGatewayProxyResult } from 'aws-lambda'
 import { isLeft } from 'fp-ts/lib/Either'
 import { StatusCodes } from 'http-status-codes'
 import type { EventProcessor } from '../../types'
 import type { UserGetter } from '../../usecases'
 import type { Event } from './Event'
+import type { Result } from './Result'
 
-export class GetEventProcessor implements EventProcessor<Event, APIGatewayProxyResult> {
+export class GetEventProcessor implements EventProcessor<Event, Result> {
   private readonly userGetter: UserGetter
 
   constructor ({
@@ -16,7 +16,7 @@ export class GetEventProcessor implements EventProcessor<Event, APIGatewayProxyR
     this.userGetter = userGetter
   }
 
-  async process (event: Event): Promise<APIGatewayProxyResult> {
+  async process (event: Event): Promise<Result> {
     const { userId } = event.pathParameters
     const errorOrUser = await this.userGetter.get(userId)
 
