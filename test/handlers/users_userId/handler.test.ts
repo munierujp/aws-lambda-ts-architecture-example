@@ -3,12 +3,10 @@ import {
   some
 } from 'fp-ts/lib/Option'
 import { StatusCodes } from 'http-status-codes'
-import type { Event } from '../../../src/handlers/users_userId/Event'
 import * as createEventProcessorModule from '../../../src/handlers/users_userId/createEventProcessor'
 import { handler } from '../../../src/handlers/users_userId/handler'
-import * as processGetEventModule from '../../../src/handlers/users_userId/processGetEvent'
+import { GetEventProcessor } from '../../../src/handlers/users_userId/processGetEvent'
 import type { Result } from '../../../src/handlers/users_userId/Result'
-import type { EventProcessor } from '../../../src/types'
 
 /* eslint-disable-next-line @typescript-eslint/no-var-requires */
 const LambdaTester = require('lambda-tester')
@@ -82,23 +80,23 @@ describe('handler()', () => {
       })
     })
 
-    describe('if createEventProcessor returns Some<EventProcessor<Event>>', () => {
-      const processGetEventSpy = jest.spyOn(processGetEventModule, 'processGetEvent')
+    describe('if createEventProcessor returns Some<GetEventProcessor>', () => {
+      const processSpy = jest.spyOn(GetEventProcessor.prototype, 'process')
       const processor = {
-        process: processGetEventSpy
-      } as unknown as EventProcessor<Event>
+        process: processSpy
+      } as unknown as GetEventProcessor
       const eventResult: Result = {
         statusCode: StatusCodes.OK,
         body: 'test body'
       }
 
       beforeEach(() => {
-        processGetEventSpy.mockResolvedValue(eventResult)
+        processSpy.mockResolvedValue(eventResult)
         createEventProcessorSpy.mockReturnValue(some(processor))
       })
 
       afterEach(() => {
-        processGetEventSpy.mockReset()
+        processSpy.mockReset()
       })
 
       it('returns response as is', () => {
@@ -106,8 +104,8 @@ describe('handler()', () => {
           .event(event)
           .expectResult((result: Result) => {
             expect(result).toBe(eventResult)
-            expect(processGetEventSpy).toBeCalledTimes(1)
-            expect(processGetEventSpy).toBeCalledWith(event)
+            expect(processSpy).toBeCalledTimes(1)
+            expect(processSpy).toBeCalledWith(event)
           })
       })
     })

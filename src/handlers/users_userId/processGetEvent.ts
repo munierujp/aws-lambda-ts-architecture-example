@@ -1,29 +1,37 @@
-import { DynamoDB } from 'aws-sdk'
+import type { APIGatewayProxyResult } from 'aws-lambda'
 import { isLeft } from 'fp-ts/lib/Either'
 import { StatusCodes } from 'http-status-codes'
-import { UserRepository } from '../../interfaces/dynamodb'
-import { UserGetter } from '../../usecases'
+import type { EventProcessor } from '../../types'
+import type { UserGetter } from '../../usecases'
 import type { Event } from './Event'
-import type { Result } from './Result'
 
-export async function processGetEvent (event: Event): Promise<Result> {
-  const dynamodb = new DynamoDB.DocumentClient()
-  const userRepo = new UserRepository(dynamodb)
-  const userGetter = new UserGetter({ userRepo })
-  const { userId } = event.pathParameters
-  const errorOrUser = await userGetter.get(userId)
+export class GetEventProcessor implements EventProcessor<Event, APIGatewayProxyResult> {
+  private readonly userGetter: UserGetter
 
-  if (isLeft(errorOrUser)) {
-    const error = errorOrUser.left
-    return {
-      statusCode: StatusCodes.NOT_FOUND,
-      body: error.message
-    }
+  constructor ({
+    userGetter
+  }: {
+    userGetter: UserGetter
+  }) {
+    this.userGetter = userGetter
   }
 
-  const user = errorOrUser.right
-  return {
-    statusCode: StatusCodes.OK,
-    body: JSON.stringify(user)
+  async process (event: Event): Promise<APIGatewayProxyResult> {
+    const { userId } = event.pathParameters
+    const errorOrUser = await this.userGetter.get(userId)
+
+    if (isLeft(errorOrUser)) {
+      const error = errorOrUser.left
+      return {
+        statusCode: StatusCodes.NOT_FOUND,
+        body: error.message
+      }
+    }
+
+    const user = errorOrUser.right
+    return {
+      statusCode: StatusCodes.OK,
+      body: JSON.stringify(user)
+    }
   }
 }
