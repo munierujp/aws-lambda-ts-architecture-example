@@ -1,7 +1,14 @@
+import {
+  none,
+  some
+} from 'fp-ts/lib/Option'
 import { StatusCodes } from 'http-status-codes'
+import type { Event } from '../../../src/handlers/users_userId/Event'
+import * as createEventProcessorModule from '../../../src/handlers/users_userId/createEventProcessor'
 import { handler } from '../../../src/handlers/users_userId/handler'
 import * as processGetEventModule from '../../../src/handlers/users_userId/processGetEvent'
 import type { Result } from '../../../src/handlers/users_userId/Result'
+import type { EventProcessor } from '../../../src/types'
 
 /* eslint-disable-next-line @typescript-eslint/no-var-requires */
 const LambdaTester = require('lambda-tester')
@@ -50,15 +57,21 @@ describe('handler()', () => {
   })
 
   describe('if event is valid', () => {
-    const pathParameters = {
-      userId: '12345678901234567890123456789012'
+    const createEventProcessorSpy = jest.spyOn(createEventProcessorModule, 'createEventProcessor')
+    const event = {
+      pathParameters: {
+        userId: '12345678901234567890123456789012'
+      }
     }
 
-    describe('if event.httpMethod is invalid', () => {
-      const event = {
-        httpMethod: 'invalid httpMethod',
-        pathParameters
-      }
+    afterEach(() => {
+      createEventProcessorSpy.mockReset()
+    })
+
+    describe('if createEventProcessor returns None', () => {
+      beforeEach(() => {
+        createEventProcessorSpy.mockReturnValue(none)
+      })
 
       it(`returns ${StatusCodes.NOT_IMPLEMENTED} response`, () => {
         return LambdaTester(handler)
@@ -69,12 +82,11 @@ describe('handler()', () => {
       })
     })
 
-    describe('if httpMethod is GET', () => {
+    describe('if createEventProcessor returns Some<EventProcessor<Event>>', () => {
       const processGetEventSpy = jest.spyOn(processGetEventModule, 'processGetEvent')
-      const event = {
-        httpMethod: 'GET',
-        pathParameters
-      }
+      const processor = {
+        process: processGetEventSpy
+      } as unknown as EventProcessor<Event>
       const eventResult: Result = {
         statusCode: StatusCodes.OK,
         body: 'test body'
@@ -82,6 +94,7 @@ describe('handler()', () => {
 
       beforeEach(() => {
         processGetEventSpy.mockResolvedValue(eventResult)
+        createEventProcessorSpy.mockReturnValue(some(processor))
       })
 
       afterEach(() => {
