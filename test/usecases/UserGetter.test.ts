@@ -16,6 +16,7 @@ import { UserGetter } from '../../src/usecases/UserGetter'
 
 describe('UserGetter', () => {
   const findByIdMock = jest.fn()
+
   const userRepo = {
     findById: findByIdMock
   }
@@ -26,9 +27,9 @@ describe('UserGetter', () => {
   })
 
   describe('get()', () => {
-    describe('if UserRepository#findById returns None', () => {
-      const userId = 'test id'
+    const userId = 'test id'
 
+    describe('if UserRepository#findById returns None', () => {
       beforeEach(() => {
         findByIdMock.mockResolvedValue(none)
       })
@@ -43,8 +44,7 @@ describe('UserGetter', () => {
     })
 
     describe('if UserRepository#findById returns Some<User>', () => {
-      const userId = 'test id'
-      const user = {
+      const user: User = {
         id: userId,
         name: 'test name'
       }
