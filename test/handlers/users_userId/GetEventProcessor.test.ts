@@ -3,28 +3,30 @@ import {
   right
 } from 'fp-ts/lib/Either'
 import { StatusCodes } from 'http-status-codes'
-import { UserNotFoundError } from '../../../src/errors'
 import type { User } from '../../../src/domain/models'
+import { UserNotFoundError } from '../../../src/errors'
 import type { Event } from '../../../src/handlers/users_userId/Event'
 import { GetEventProcessor } from '../../../src/handlers/users_userId/GetEventProcessor'
-import { UserGetter } from '../../../src/usecases'
+import type { UserGetter } from '../../../src/usecases'
 
 describe('GetEventProcessor', () => {
+  const getMock = jest.fn()
+
+  const userGetter = {
+    get: getMock
+  } as unknown as UserGetter
+  const processor = new GetEventProcessor({ userGetter })
+
+  afterEach(() => {
+    getMock.mockReset()
+  })
+
   describe('process()', () => {
-    const getMock = jest.fn()
-    const userGetter = {
-      get: getMock
-    } as unknown as UserGetter
-    const processor = new GetEventProcessor({ userGetter })
     const event = {
       pathParameters: {
         userId: 'test userId'
       }
     } as unknown as Event
-
-    afterEach(() => {
-      getMock.mockReset()
-    })
 
     describe('if UserGetter#get returns Left<UserNotFoundError>', () => {
       const error = new UserNotFoundError('test error')
