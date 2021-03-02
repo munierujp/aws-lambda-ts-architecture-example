@@ -39,7 +39,22 @@ describe('UserRepository', () => {
       getMock.mockReset()
     })
 
-    describe('if record is valid as User', () => {
+    describe('if item is invalid as User', () => {
+      beforeEach(() => {
+        isUserSpy.mockReturnValue(false)
+      })
+
+      it('returns None', async () => {
+        const optionalUser = await repo.findById(id)
+        expect(isNone(optionalUser)).toBeTruthy()
+        expect(getMock).toBeCalledTimes(1)
+        expect(getPromiseMock).toBeCalledTimes(1)
+        expect(isUserSpy).toBeCalledTimes(1)
+        expect(isUserSpy).toBeCalledWith(item)
+      })
+    })
+
+    describe('if item is valid as User', () => {
       beforeEach(() => {
         isUserSpy.mockReturnValue(true)
       })
@@ -48,21 +63,6 @@ describe('UserRepository', () => {
         const optionalUser = await repo.findById(id)
         expect(isSome(optionalUser)).toBeTruthy()
         expect((optionalUser as Some<User>).value).toBe(item)
-        expect(getMock).toBeCalledTimes(1)
-        expect(getPromiseMock).toBeCalledTimes(1)
-        expect(isUserSpy).toBeCalledTimes(1)
-        expect(isUserSpy).toBeCalledWith(item)
-      })
-    })
-
-    describe('if record is invalid as User', () => {
-      beforeEach(() => {
-        isUserSpy.mockReturnValue(false)
-      })
-
-      it('returns None', async () => {
-        const optionalUser = await repo.findById(id)
-        expect(isNone(optionalUser)).toBeTruthy()
         expect(getMock).toBeCalledTimes(1)
         expect(getPromiseMock).toBeCalledTimes(1)
         expect(isUserSpy).toBeCalledTimes(1)
