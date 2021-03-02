@@ -56,6 +56,7 @@ describe('handler()', () => {
 
   describe('if event is valid', () => {
     const createEventProcessorSpy = jest.spyOn(createEventProcessorModule, 'createEventProcessor')
+
     const event = {
       pathParameters: {
         userId: '12345678901234567890123456789012'
@@ -82,6 +83,7 @@ describe('handler()', () => {
 
     describe('if createEventProcessor returns Some<GetEventProcessor>', () => {
       const processSpy = jest.spyOn(GetEventProcessor.prototype, 'process')
+
       const processor = {
         process: processSpy
       } as unknown as GetEventProcessor
