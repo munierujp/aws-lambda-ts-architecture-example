@@ -12,7 +12,7 @@
     "@middy/core": "1.5.2",
     "@middy/validator": "1.5.2",
     "aws-sdk": "2.822.0",
-    "fp-ts": "2.9.5",
+    "fp-ts": "2.10.4",
     "http-method-enum": "1.0.0",
     "http-status-codes": "2.1.4",
     "io-ts": "2.2.16"
