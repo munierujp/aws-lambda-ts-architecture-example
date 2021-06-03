@@ -9,7 +9,7 @@
     "test": "jest --passWithNoTests"
   },
   "dependencies": {
-    "@middy/core": "1.5.2",
+    "@middy/core": "2.3.0",
     "@middy/validator": "1.5.2",
     "aws-sdk": "2.822.0",
     "fp-ts": "2.10.4",
