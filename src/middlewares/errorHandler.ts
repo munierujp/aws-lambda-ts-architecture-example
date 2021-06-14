@@ -1,12 +1,13 @@
+import type { MiddlewareObj } from '@middy/core'
 import { createErrorResponse } from '../modules'
-import type middy from '@middy/core'
 
-export const errorHandler: middy.Middleware<never, any, any> = () => {
+type Middleware = Required<Pick<MiddlewareObj, 'onError'>>
+
+export const errorHandler = (): Middleware => {
   return {
-    onError: (handler, next) => {
-      const resp = createErrorResponse(handler.error)
-      handler.response = resp
-      next()
+    onError (req) {
+      const error = req.error ?? new Error('missing error')
+      return createErrorResponse(error)
     }
   }
 }

@@ -1,6 +1,7 @@
 import type { Handler } from 'aws-lambda'
 import { isNone } from 'fp-ts/lib/Option'
 import middy from '@middy/core'
+import type { MiddyfiedHandler } from '@middy/core'
 import { InvalidMethodError } from '../../errors'
 import {
   errorHandler,
@@ -22,7 +23,7 @@ export const handler = middyfy(async (event) => {
   return await processor.process(event)
 })
 
-function middyfy (handler: Handler<Event, Result>): middy.Middy<Event, Result> {
+function middyfy (handler: Handler<Event, Result>): MiddyfiedHandler<Event, Result> {
   return middy(handler)
     .use(validator({
       inputSchema: {
