@@ -5,7 +5,7 @@
   "private": true,
   "scripts": {
     "build": "tsc --project tsconfig.build.json",
-    "lint": "eslint --ignore-path .gitignore '**/*.{js,ts}'",
+    "lint": "eslint '**/*.{js,ts}'",
     "test": "jest --passWithNoTests"
   },
   "dependencies": {
