@@ -10,7 +10,7 @@
   },
   "dependencies": {
     "@middy/core": "2.4.1",
-    "@middy/validator": "^2.3.0",
+    "@middy/validator": "2.3.0",
     "aws-sdk": "2.822.0",
     "fp-ts": "2.10.5",
     "http-method-enum": "1.0.0",
@@ -18,7 +18,7 @@
     "io-ts": "2.2.16"
   },
   "devDependencies": {
-    "@tsconfig/node12": "^1.0.8",
+    "@tsconfig/node12": "1.0.8",
     "@types/aws-lambda": "8.10.77",
     "@types/jest": "26.0.23",
     "@types/node": "12.19.12",
