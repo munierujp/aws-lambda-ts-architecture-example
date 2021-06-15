@@ -18,6 +18,7 @@
     "io-ts": "2.2.16"
   },
   "devDependencies": {
+    "@jest/types": "^27.0.2",
     "@tsconfig/node12": "1.0.8",
     "@types/aws-lambda": "8.10.77",
     "@types/jest": "26.0.23",
