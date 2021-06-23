@@ -5,5 +5,14 @@ module.exports = {
   ],
   parserOptions: {
     project: './tsconfig.json'
+  },
+  rules: {
+    'sort-imports': 'off',
+    'import/order': ['error', {
+      alphabetize: {
+        order: 'asc',
+        caseInsensitive: true
+      }
+    }]
   }
 }

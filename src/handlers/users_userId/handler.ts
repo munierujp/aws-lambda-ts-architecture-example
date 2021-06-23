@@ -1,7 +1,7 @@
-import type { Handler } from 'aws-lambda'
-import { isNone } from 'fp-ts/lib/Option'
 import middy from '@middy/core'
 import type { MiddyfiedHandler } from '@middy/core'
+import type { Handler } from 'aws-lambda'
+import { isNone } from 'fp-ts/lib/Option'
 import { InvalidMethodError } from '../../errors'
 import {
   errorHandler,

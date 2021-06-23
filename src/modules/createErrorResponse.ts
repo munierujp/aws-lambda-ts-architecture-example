@@ -1,6 +1,6 @@
+import type { APIGatewayProxyResult } from 'aws-lambda'
 import { StatusCodes } from 'http-status-codes'
 import { InvalidMethodError } from '../errors'
-import type { APIGatewayProxyResult } from 'aws-lambda'
 
 export function createErrorResponse (error: Error): APIGatewayProxyResult {
   if (error instanceof InvalidMethodError) {
