@@ -1,6 +1,6 @@
+import type middy from '@middy/core'
 import type { APIGatewayProxyResult } from 'aws-lambda'
 import { StatusCodes } from 'http-status-codes'
-import type middy from '@middy/core'
 import { errorHandler } from '../../src/middlewares/errorHandler'
 import * as createErrorResponseModule from '../../src/modules/createErrorResponse'
 
