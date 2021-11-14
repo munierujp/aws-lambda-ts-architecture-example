@@ -4,5 +4,11 @@
   ],
   "ignoreDeps": [
     "aws-sdk"
+  ],
+  "packageRules": [
+    {
+      "matchPackageNames": ["lint-staged"],
+      "allowedVersions": "<12"
+    }
   ]
 }
