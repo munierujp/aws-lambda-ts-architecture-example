@@ -16,7 +16,7 @@
     },
     {
       "matchPackageNames": ["node"],
-      "allowedVersions": "<14.18"
+      "enabled": false
     }
   ]
 }
