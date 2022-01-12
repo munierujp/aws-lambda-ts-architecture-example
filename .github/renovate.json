@@ -8,7 +8,7 @@
   "packageRules": [
     {
       "matchPackageNames": ["@types/node"],
-      "allowedVersions": "<14.19"
+      "allowedVersions": "<15"
     },
     {
       "matchPackageNames": ["lint-staged"],
@@ -16,7 +16,7 @@
     },
     {
       "matchPackageNames": ["node"],
-      "allowedVersions": "<14.19"
+      "allowedVersions": "<15"
     }
   ]
 }
