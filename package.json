@@ -11,7 +11,7 @@
   },
   "dependencies": {
     "@middy/core": "2.5.5",
-    "@middy/validator": "2.5.4",
+    "@middy/validator": "2.5.5",
     "aws-sdk": "2.952.0",
     "fp-ts": "2.11.8",
     "http-method-enum": "1.0.0",
