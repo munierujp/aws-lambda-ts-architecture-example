@@ -22,7 +22,7 @@
     "@jest/types": "27.4.2",
     "@tsconfig/node14": "1.0.1",
     "@types/aws-lambda": "8.10.93",
-    "@types/jest": "27.4.0",
+    "@types/jest": "27.4.1",
     "@types/node": "14.18.9",
     "@typescript-eslint/eslint-plugin": "5.17.0",
     "eslint": "8.12.0",
