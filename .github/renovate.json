@@ -1,6 +1,6 @@
 {
   "extends": [
-    "config:base"
+     "github>munierujp/renovate-config"
   ],
   "ignoreDeps": [
     "aws-sdk"
